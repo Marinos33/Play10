@@ -24,7 +24,10 @@
     "@discordjs/voice": "^0.16.0",
     "discord.js": "^14.10.2",
     "dotenv": "^16.0.3",
-    "nodemon": "^2.0.22"
+    "ffmpeg-static": "^5.1.0",
+    "libsodium-wrappers": "^0.7.11",
+    "nodemon": "^2.0.22",
+    "ytdl-core": "^4.11.4"
   },
   "devDependencies": {
     "eslint": "^8.39.0"
