@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Player } = require('../../globalResources/globalPlayer');
 const { Queue } = require('../../globalResources/globalQueue');
 
 module.exports = {
