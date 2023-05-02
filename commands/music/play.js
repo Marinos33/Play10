@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const ffmpeg = require('ffmpeg-static');
+const { Queue } = require('../../globalQueue.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
