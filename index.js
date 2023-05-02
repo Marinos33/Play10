@@ -8,7 +8,7 @@ const clientOptions = {
     intents: [
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.GuildVoiceStates,
     ]
   };
 

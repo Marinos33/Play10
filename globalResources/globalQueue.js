@@ -5,8 +5,16 @@ class Queue {
       Queue.queue.push(song);
     }
   
-    static shift() {s
+    static shift() {
       Queue.queue.shift();
+    }
+
+    static pop() {
+        return Queue.queue.pop();
+    }
+
+    static clear() {
+        Queue.queue = [];
     }
   }
   

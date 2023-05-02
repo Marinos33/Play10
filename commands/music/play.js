@@ -1,8 +1,9 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { joinVoiceChannel, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
+const { createAudioResource } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const ffmpeg = require('ffmpeg-static');
-const { Queue } = require('../../globalQueue.js');
+const { Queue } = require('../../globalResources/globalQueue.js');
+const { Player } = require('../../globalResources/globalPlayer.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -13,18 +14,6 @@ module.exports = {
 				.setDescription('The URL of the song to play')
 				.setRequired(true)),
 	async execute(interaction) {
-		const member = interaction.member;
-		const voiceChannel = member.voice.channel;
-		if (!voiceChannel) {
-			return await interaction.reply('You need to be in a voice channel to use this command.');
-		}
-
-		const connection = joinVoiceChannel({
-			channelId: voiceChannel.id,
-			guildId: voiceChannel.guild.id,
-			adapterCreator: voiceChannel.guild.voiceAdapterCreator,
-		});
-
         //get url from given parameter
         const url = interaction.options.getString('url');
 
@@ -37,12 +26,15 @@ module.exports = {
 
         //create resources and player
 		const resource = createAudioResource(stream);
-		const player = createAudioPlayer();
 
-        player.play(resource);
+		//if the player is already playing, add the resource to the queue
+		if (Player.isPlaying()) {
+			Queue.push(resource);
+			return await interaction.reply('Added the song to the queue');
+		}
 
-		connection.subscribe(player);
+        Player.play(resource);
 
-		await interaction.reply('Now Playing the song from the given URL!');
+		await interaction.reply('Now Playing the song from the given URL');
 	},
 };
