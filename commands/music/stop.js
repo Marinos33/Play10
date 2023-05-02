@@ -13,6 +13,7 @@ module.exports = {
 			Queue.clear();
 			return await interaction.reply('Music has been stopped!');
 		}
+		
 		return await interaction.reply('There is no music playing!');
 	},
 };

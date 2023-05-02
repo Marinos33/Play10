@@ -24,17 +24,22 @@ module.exports = {
         //get audio stream from url
 		const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' });
 
+		const info = await ytdl.getBasicInfo(url);
+		const title = info.videoDetails.title + " from " + info.videoDetails.author.name;
+
         //create resources and player
 		const resource = createAudioResource(stream);
 
+		const song = { resource, title };
 		//if the player is already playing, add the resource to the queue
 		if (Player.isPlaying()) {
-			Queue.push(resource);
+			Queue.push(song);
 			return await interaction.reply('Added the song to the queue');
 		}
 
         Player.play(resource);
+		Player.setSong(song);
 
-		await interaction.reply('Now Playing the song from the given URL');
+		return await interaction.reply('Now Playing the song : \n' + title);
 	},
 };

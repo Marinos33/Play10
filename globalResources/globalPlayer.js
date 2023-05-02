@@ -2,6 +2,7 @@ const { createAudioPlayer } = require('@discordjs/voice');
 
 class Player {
     static player = createAudioPlayer();
+    static song = null;
 
     static getPlayer() {
         return this.player;
@@ -29,6 +30,14 @@ class Player {
 
     static resume(){
         this.player.unpause();
+    }
+
+    static setSong(song){
+        this.song = song;
+    }
+
+    static getSong(){
+        return this.song;
     }
   }
   

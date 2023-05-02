@@ -16,6 +16,10 @@ class Queue {
     static clear() {
         Queue.queue = [];
     }
+
+    static getQueue() {
+        return Queue.queue;
+    }
   }
   
   module.exports = {

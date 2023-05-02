@@ -11,6 +11,7 @@ module.exports = {
                 Player.resume();
                 return await interaction.reply('Music has been resumed!');
             }
+            
             return await interaction.reply('There is no music paused!');
 	},
 };

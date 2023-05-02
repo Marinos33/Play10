@@ -13,8 +13,8 @@ module.exports = {
 			return await interaction.reply('There is no music in the queue!');
 		}
 		
-		Player.play(music);
+		Player.play(music.resource);
 
-		await interaction.reply('Now Playing the next song');
+		return await interaction.reply('Now Playing the next song');
 	},
 };
