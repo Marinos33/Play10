@@ -5,7 +5,7 @@ const { Queue } = require('../../globalResources/globalQueue.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stop')
-		.setDescription('Replies with Pong!'),
+		.setDescription('Stop the bot from playing music'),
 	async execute(interaction) {
 		//stop the music and clear the queue
 		if(Player.isPlaying()){

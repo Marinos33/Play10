@@ -5,7 +5,7 @@ const { Player } = require('../../globalResources/globalPlayer.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('next')
-		.setDescription('Replies with Pong!'),
+		.setDescription('Play the next music in the queue'),
 	async execute(interaction) {
 		const music = Queue.pop();
 
