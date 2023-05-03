@@ -10,7 +10,7 @@ const clientOptions = {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildVoiceStates,
     ]
-  };
+};
 
 const client = new Client(clientOptions);
 
