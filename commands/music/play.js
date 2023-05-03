@@ -1,7 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { createAudioResource } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
-const ffmpeg = require('ffmpeg-static');
 const { Queue } = require('../../globalResources/globalQueue.js');
 const { Player } = require('../../globalResources/globalPlayer.js');
 
