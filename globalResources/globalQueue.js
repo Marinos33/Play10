@@ -20,6 +20,10 @@ class Queue {
     static getQueue() {
         return Queue.queue;
     }
+
+    static length() {
+        return Queue.queue.length;
+    }
   }
   
   module.exports = {

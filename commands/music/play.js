@@ -31,14 +31,14 @@ module.exports = {
 		const resource = createAudioResource(stream);
 
 		const song = { resource, title };
+		
 		//if the player is already playing, add the resource to the queue
 		if (Player.isPlaying()) {
 			Queue.push(song);
 			return await interaction.reply('Added the song to the queue');
 		}
 
-        Player.play(resource);
-		Player.setSong(song);
+        Player.play(song);
 
 		return await interaction.reply('Now Playing the song : \n' + title);
 	},

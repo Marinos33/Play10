@@ -1,4 +1,5 @@
 const { createAudioPlayer } = require('@discordjs/voice');
+const { Queue } = require('./globalQueue.js');
 
 class Player {
     static player = createAudioPlayer();
@@ -8,8 +9,19 @@ class Player {
         return this.player;
     }
 
-    static play(resource){
-        this.player.play(resource);
+    static play(song){
+        this.player.play(song.resource);
+		this.setSong(song);
+
+		this.player.addListener("stateChange", (oldOne, newOne) => {
+			if (newOne.status === "idle") {
+				if (Queue.length() > 0) {
+					const nextSong = Queue.pop();
+					this.player.play(nextSong.resource);
+					this.setSong(song);
+				}
+			}
+		});
     }
 
     static isPlaying(){
