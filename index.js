@@ -1,6 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits, Events, Collection  }  = require("discord.js");
+const { Player } = require('./globalResources/globalPlayer.js');
 
 require('dotenv').config() //get the env variables
 
@@ -41,6 +42,17 @@ client.on(Events.ClientReady, () => {
   } else {
       console.log(`Logged in, but user is not available.`);
   }
+});
+
+//on bot leaving, kick or banned stop the music
+client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
+	//if got kick, banned or leave	
+	if (newState.member?.user.bot && newState.channelId === null) {	
+		const player = Player.getPlayer();
+		if (player) {
+			player.stop();
+		}
+	}
 });
 
 //on command written in chat
