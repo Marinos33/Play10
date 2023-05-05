@@ -1,9 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { createAudioResource } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
-const { Queue } = require('../../globalResources/globalQueue.js');
-const { Player } = require('../../globalResources/globalPlayer.js');
-
+const { PlayerFactory } = require("../../resources/playerFactory");
+ 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('play')
@@ -31,14 +30,16 @@ module.exports = {
 		const resource = createAudioResource(stream);
 
 		const song = { resource, title };
+
+		const playerInstance = PlayerFactory.getPlayer(interaction.guildId);
 		
 		//if the player is already playing, add the resource to the queue
-		if (Player.isPlaying()) {
-			Queue.push(song);
+		if (playerInstance.isPlaying()) {
+			playerInstance.queue.push(song);
 			return await interaction.reply('Added the song to the queue');
 		}
 
-        Player.play(song);
+        playerInstance.play(song);
 
 		return await interaction.reply('Now Playing the song : \n' + title);
 	},

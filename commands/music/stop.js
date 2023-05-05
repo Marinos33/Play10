@@ -1,16 +1,20 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Player } = require('../../globalResources/globalPlayer.js');
-const { Queue } = require('../../globalResources/globalQueue.js');
+const { PlayerFactory } = require("../../resources/playerFactory");
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stop')
 		.setDescription('Stop the bot from playing music'),
 	async execute(interaction) {
+		const guildId = interaction.guildId;
+
+		const playerInstance = PlayerFactory.getPlayer(guildId);
+
 		//stop the music and clear the queue
-		if(Player.isPlaying()){
-			Player.stop();
-			Queue.clear();
+		if(playerInstance.isPlaying()){
+			playerInstance.stop();
+			playerInstance.queue = [];
 			return await interaction.reply('Music has been stopped!');
 		}
 		

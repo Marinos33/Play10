@@ -1,12 +1,16 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Player } = require('../../globalResources/globalPlayer');
+const { PlayerFactory } = require("../../resources/playerFactory");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('what')
 		.setDescription('Tell you what is currently playing'),
 	async execute(interaction) {
-        const song = Player.getSong();
+		const guildId = interaction.guildId;
+
+		const playerInstance = PlayerFactory.getPlayer(guildId);
+
+        const song = playerInstance.getSong();
 
         if (!song) {
             return await interaction.reply('There is no music playing!');

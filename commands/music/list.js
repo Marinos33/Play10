@@ -1,12 +1,16 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Queue } = require('../../globalResources/globalQueue');
+const { PlayerFactory } = require("../../resources/playerFactory");
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('list')
 		.setDescription('List the songs in the queue'),
 	async execute(interaction) {
-        const queue = Queue.getQueue();
+		const guildId = interaction.guildId;
+
+		const playerInstance = PlayerFactory.getPlayer(guildId);
+
+        const queue = playerInstance.queue;
 
 		if (!queue.length) {
 			return await interaction.reply('There is no music in the queue!');

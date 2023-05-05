@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Player } = require('../../globalResources/globalPlayer.js');
+const { PlayerFactory } = require("../../resources/playerFactory");
 
 
 module.exports = {
@@ -7,10 +7,13 @@ module.exports = {
 		.setName('pause')
 		.setDescription('Pause the music'),
 	async execute(interaction) {
+			const guildId = interaction.guildId;
+
+			const playerInstance = PlayerFactory.getPlayer(guildId);
 		
 			//if music is playing pause the music
-			if(Player.isPlaying()){
-				Player.pause();
+			if(playerInstance.isPlaying()){
+				playerInstance.pause();
 				return await interaction.reply('Music has been paused!');
 			}
 

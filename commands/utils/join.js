@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { joinVoiceChannel } = require('@discordjs/voice');
-const { Player } = require('../../globalResources/globalPlayer.js');
+const { PlayerFactory } = require("../../resources/playerFactory");
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -20,7 +20,11 @@ module.exports = {
 			adapterCreator: voiceChannel.guild.voiceAdapterCreator,
 		});
 
-		connection.subscribe(Player.getPlayer());
+		const guildId = interaction.guildId;
+
+		const playerInstance = PlayerFactory.createPlayer(guildId);
+
+		connection.subscribe(playerInstance.getPlayer());
 
 		await interaction.reply('The bot has join the channel!');
 	},

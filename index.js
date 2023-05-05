@@ -1,7 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, GatewayIntentBits, Events, Collection  }  = require("discord.js");
-const { Player } = require('./globalResources/globalPlayer.js');
+const { PlayerFactory } = require("./resources/playerFactory");
+const { getVoiceConnection } = require('@discordjs/voice');
 
 require('dotenv').config() //get the env variables
 
@@ -48,9 +49,19 @@ client.on(Events.ClientReady, () => {
 client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
 	//if got kick, banned or leave	
 	if (newState.member?.user.bot && newState.channelId === null) {	
-		const player = Player.getPlayer();
-		if (player) {
-			player.stop();
+		const guildId = newState.guild.id;
+		const playerInstance = PlayerFactory.getPlayer(guildId);
+		if (playerInstance) {
+			playerInstance.stop();
+			PlayerFactory.removePlayer(guildId);
+		}
+	}
+
+	//if the bot is alone in the channel, leave
+	if (oldState.channel && oldState.channel.members.size === 1) {
+		const connectionVoice = getVoiceConnection(oldState.guild.id);
+		if (connectionVoice) {
+			connectionVoice.destroy();
 		}
 	}
 });
