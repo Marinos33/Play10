@@ -55,6 +55,11 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
 			playerInstance.stop();
 			PlayerFactory.removePlayer(guildId);
 		}
+
+		const connectionVoice = getVoiceConnection(oldState.guild.id);
+		if (connectionVoice) {
+			connectionVoice.destroy();
+		}
 	}
 
 	//if the bot is alone in the channel, leave
@@ -87,6 +92,14 @@ client.on(Events.InteractionCreate, async interaction => {
 			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 	}
+});
+
+//on bot crash, restart it
+client.on(Events.ClientError, async error => {
+	console.error(error);
+	client.destroy();
+  
+	process.exit(0);
 });
 
 client.login(process.env.BOT_TOKEN);

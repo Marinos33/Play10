@@ -2,45 +2,50 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { createAudioResource } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const { PlayerFactory } = require("../../resources/playerFactory");
- 
+
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('play')
-		.setDescription('Play the song given!')
-		.addStringOption(option =>
-			option.setName('url')
-				.setDescription('The URL of the song to play')
-				.setRequired(true)),
-	async execute(interaction) {
-		
-        //get url from given parameter
-        const url = interaction.options.getString('url');
+  data: new SlashCommandBuilder()
+    .setName('play')
+    .setDescription('Play the song given!')
+    .addStringOption(option =>
+      option.setName('url')
+        .setDescription('The URL of the song to play')
+        .setRequired(true)),
+  async execute(interaction) {
 
-		if (!ytdl.validateURL(url)) {
-			return await interaction.reply('Invalid YouTube URL provided. Please provide a valid YouTube URL.');
-		}
+    //get url from given parameter
+    const url = interaction.options.getString('url');
 
-        //get audio stream from url
-		const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' });
+    if (!ytdl.validateURL(url)) {
+      return await interaction.reply('Invalid YouTube URL provided. Please provide a valid YouTube URL.');
+    }
 
-		const info = await ytdl.getBasicInfo(url);
-		const title = info.videoDetails.title + " from " + info.videoDetails.author.name;
+    try {
+      //get audio stream from url
+      const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' });
 
-        //create resources and player
-		const resource = createAudioResource(stream);
+      const info = await ytdl.getBasicInfo(url);
+      const title = `${info.videoDetails.title} from ${info.videoDetails.author.name}`;
 
-		const song = { resource, title };
+      //create resources and player
+      const resource = createAudioResource(stream);
 
-		const playerInstance = PlayerFactory.getPlayer(interaction.guildId);
-		
-		//if the player is already playing, add the resource to the queue
-		if (playerInstance.isPlaying()) {
-			playerInstance.queue.push(song);
-			return await interaction.reply('Added the song to the queue');
-		}
+      const song = { resource, title };
 
-        playerInstance.play(song);
+      const playerInstance = PlayerFactory.getPlayer(interaction.guildId);
 
-		return await interaction.reply('Now Playing the song : \n' + title);
-	},
+      //if the player is already playing, add the resource to the queue
+      if (playerInstance.isPlaying()) {
+        playerInstance.queue.push(song);
+        return await interaction.reply('Added the song to the queue');
+      }
+
+      playerInstance.play(song);
+
+      return await interaction.reply('Now Playing the song : \n' + title);
+    } catch (e) {
+      console.log(e)
+      return await interaction.reply('Something wen wrong');
+    }
+  },
 };
