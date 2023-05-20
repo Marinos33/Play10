@@ -17,7 +17,7 @@ module.exports = {
 		const connection = joinVoiceChannel({
 			channelId: voiceChannel.id,
 			guildId: voiceChannel.guild.id,
-			adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+			adapterCreator: voiceChannel.guild.voiceAdapterCreator
 		});
 
 		const guildId = interaction.guildId;
