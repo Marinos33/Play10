@@ -13,9 +13,12 @@ module.exports = {
         .setRequired(true)),
   async execute(interaction) {
 
-    //if the bot is not in a voice channel return message
-    const isBotInVoiceChannel = interaction.guild.channels.cache.some(channel => channel.type === 'GUILD_VOICE' && channel.members.has(Client.user.id));
-    if (!isBotInVoiceChannel) {
+    const botMember = interaction.guild.members.cache.get(interaction.client.user.id);
+    const botVoiceChannel = botMember.voice.channel;
+    const userVoiceChannel = interaction.member.voice.channel;
+
+    //check if the bot is in a voice channel
+    if (!botVoiceChannel || botVoiceChannel !== userVoiceChannel) {
       return await interaction.reply('The bot is not in a voice channel. Please use the /join command to make the bot join the channel.');
     }
 
