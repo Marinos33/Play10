@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { PlayerFactory } = require("../../resources/playerFactory");
+const { PlayerFactory } = require('../../resources/playerFactory');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -21,10 +21,8 @@ module.exports = {
 
       return await interaction.reply('Currently playing ' + title);
     } catch (e) {
-      console.log(e)
-      return await interaction.reply('Something wen wrong');
+      console.log(e);
+      return await interaction.reply('Something went wrong');
     }
   },
 };
-
-

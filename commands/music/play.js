@@ -1,37 +1,47 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { createAudioResource } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
-const { PlayerFactory } = require("../../resources/playerFactory");
+const { PlayerFactory } = require('../../resources/playerFactory');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('play')
     .setDescription('Play the song given!')
-    .addStringOption(option =>
-      option.setName('url')
+    .addStringOption((option) =>
+      option
+        .setName('url')
         .setDescription('The URL of the song to play')
-        .setRequired(true)),
+        .setRequired(true),
+    ),
   async execute(interaction) {
-
-    const botMember = interaction.guild.members.cache.get(interaction.client.user.id);
+    const botMember = interaction.guild.members.cache.get(
+      interaction.client.user.id,
+    );
     const botVoiceChannel = botMember.voice.channel;
     const userVoiceChannel = interaction.member.voice.channel;
 
     //check if the bot is in a voice channel
     if (!botVoiceChannel || botVoiceChannel !== userVoiceChannel) {
-      return await interaction.reply('The bot is not in a voice channel. Please use the /join command to make the bot join the channel.');
+      return await interaction.reply(
+        'The bot is not in a voice channel. Please use the /join command to make the bot join the channel.',
+      );
     }
 
     //get url from given parameter
     const url = interaction.options.getString('url');
 
     if (!ytdl.validateURL(url)) {
-      return await interaction.reply('Invalid YouTube URL provided. Please provide a valid YouTube URL.');
+      return await interaction.reply(
+        'Invalid YouTube URL provided. Please provide a valid YouTube URL.',
+      );
     }
 
     try {
       //get audio stream from url
-      const stream = ytdl(url, { filter: 'audioonly', quality: 'highestaudio' });
+      const stream = ytdl(url, {
+        filter: 'audioonly',
+        quality: 'highestaudio',
+      });
 
       const info = await ytdl.getBasicInfo(url);
       const title = `${info.videoDetails.title} from ${info.videoDetails.author.name}`;
@@ -53,8 +63,8 @@ module.exports = {
 
       return await interaction.reply('Now Playing the song : \n' + title);
     } catch (e) {
-      console.log(e)
-      return await interaction.reply('Something wen wrong');
+      console.log(e);
+      return await interaction.reply('Something went wrong');
     }
   },
 };
