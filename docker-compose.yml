@@ -8,8 +8,6 @@ services:
       - BOT_TOKEN=${BOT_TOKEN}
       - CLIENT_ID=${CLIENT_ID}
       - GUILD_ID=${GUILD_ID}
-    ports:
-      - 3000:3000
     volumes:
       - logs:/logs
 
