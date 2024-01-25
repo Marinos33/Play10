@@ -7,8 +7,8 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.listen(port, () =>
   console.log(`Play10 Bot listening at http://localhost:${port}`),
-);*/
-
+);
+*/
 // ================= START BOT CODE ===================
 const fs = require('node:fs');
 const path = require('node:path');

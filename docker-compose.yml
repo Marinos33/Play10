@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  play10:
+    image: unlimitedrulebook/play10:latest
+    container_name: play10
+    restart: unless-stopped
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CLIENT_ID=${CLIENT_ID}
+      - GUILD_ID=${GUILD_ID}
+    ports:
+      - 3000:3000
+    volumes:
+      - logs:/logs
+
+volumes:
+  logs:
