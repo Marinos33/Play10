@@ -1,69 +1,75 @@
 const { createAudioPlayer } = require('@discordjs/voice');
+const { writeToLogFile, writeErrorToLogFile } = require('../utils/logger');
 
 class Player {
-    constructor(playerId) {
-        this.playerId = playerId;
-        this.player = createAudioPlayer();
-        this.queue = [];
+  constructor(playerId) {
+    this.playerId = playerId;
+    this.player = createAudioPlayer();
+    this.queue = [];
 
-        this.player.addListener("stateChange", (oldOne, newOne) => {
-            if (newOne.status === "idle") {
-                this.playNext();
-            }
-        });
-    }
+    this.player.addListener('stateChange', (oldOne, newOne) => {
+      if (newOne.status === 'idle') {
+        this.playNext();
+      }
+    });
 
-    playNext() {
-        if (this.queue.length > 0) {
-            const song = this.queue.pop();
-            this.player.play(song.resource);
-            this.setSong(song);
-        }
-    }
+    this.player.on('error', (error) => {
+      console.error('AudioPlayerError:', error.message);
+      writeToLogFile(`AudioPlayerError: ${error.message}`);
+    });
+  }
 
-    play(song){
-        if (this.isPlaying()) {
-            this.queue.push(song);
-        } else {
-            this.player.play(song.resource);
-            this.setSong(song);
-        }
+  playNext() {
+    if (this.queue.length > 0) {
+      const song = this.queue.pop();
+      this.player.play(song.resource);
+      this.setSong(song);
     }
+  }
 
-    isPlaying(){
-        return this.player.state.status === 'playing';
+  play(song) {
+    if (this.isPlaying()) {
+      this.queue.push(song);
+    } else {
+      this.player.play(song.resource);
+      this.setSong(song);
     }
+  }
 
-    isPaused(){
-        return this.player.state.status === 'paused';
-    }
+  isPlaying() {
+    return this.player.state.status === 'playing';
+  }
 
-    pause(){
-        this.player.pause();
-    }
+  isPaused() {
+    return this.player.state.status === 'paused';
+  }
 
-    stop(){
-        this.player.stop();
-        this.queue = [];
-    }
+  pause() {
+    this.player.pause();
+  }
 
-    resume(){
-        this.player.unpause();
-    }
+  stop() {
+    this.player.stop();
+    this.queue = [];
+  }
 
-    setSong(song){
-        this.song = song;
-    }
+  resume() {
+    this.player.unpause();
+  }
 
-    getSong(){
-        return this.song;
-    }
+  setSong(song) {
+    this.song = song;
+  }
 
-    getPlayer(){
-        return this.player;
-    }
+  getSong() {
+    return this.song;
+  }
+
+  getPlayer() {
+    return this.player;
+  }
 }
 
 module.exports = {
-    Player
+  Player,
 };

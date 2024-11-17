@@ -23,6 +23,7 @@ module.exports = {
       return await interaction.reply('Now Playing the next song');
     } catch (e) {
       console.log(e);
+      writeErrorToLogFile(e.stack);
       return await interaction.reply('Something went wrong');
     }
   },

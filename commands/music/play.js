@@ -1,7 +1,9 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { createAudioResource } = require('@discordjs/voice');
-const ytdl = require('ytdl-core');
+const ytdl = require('@distube/ytdl-core');
 const { PlayerFactory } = require('../../resources/playerFactory');
+const { writeToLogFile, writeErrorToLogFile } = require('../utils/logger');
+const fs = require('node:fs');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -37,13 +39,25 @@ module.exports = {
     }
 
     try {
+      const youtubeCookies = JSON.parse(fs.readFileSync('cookies.json'));
+
+      const agent = ytdl.createAgent(youtubeCookies);
+
       //get audio stream from url
       const stream = ytdl(url, {
         filter: 'audioonly',
         quality: 'highestaudio',
+        agent: agent,
+        highWaterMark: 1 << 25, // Adjust the buffer size
+        requestOptions: {
+          headers: {
+            'User-Agent': 'Mozilla/5.0', // Spoof a browser user agent
+          },
+        },
       });
 
-      const info = await ytdl.getBasicInfo(url);
+      const info = await ytdl.getBasicInfo(url, { agent });
+
       const title = `${info.videoDetails.title} from ${info.videoDetails.author.name}`;
 
       //create resources and player
@@ -64,6 +78,9 @@ module.exports = {
       return await interaction.reply('Now Playing the song : \n' + title);
     } catch (e) {
       console.log(e);
+
+      writeErrorToLogFile(e.stack);
+
       return await interaction.reply('Something went wrong');
     }
   },

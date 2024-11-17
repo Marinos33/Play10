@@ -15,6 +15,10 @@ const path = require('node:path');
 const { Client, GatewayIntentBits, Events, Collection } = require('discord.js');
 const { PlayerFactory } = require('./resources/playerFactory');
 const { getVoiceConnection } = require('@discordjs/voice');
+const {
+  writeToLogFile,
+  writeErrorToLogFile,
+} = require('./commands/utils/logger');
 
 require('dotenv').config(); //get the env variables
 
@@ -47,7 +51,7 @@ for (const folder of commandFolders) {
       client.commands.set(command.data.name, command);
     } else {
       console.log(
-        `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`,
+        `[WARNING] The command at ${filePath} has been skipped because it is missing a required "data" or "execute" property.`,
       );
     }
   }
@@ -56,6 +60,19 @@ for (const folder of commandFolders) {
 client.on(Events.ClientReady, () => {
   if (client.user) {
     console.log(`Logged in as ${client.user.tag}!`);
+
+    //check if cookies.josn file exists, if not warn the user
+    if (!fs.existsSync('cookies.json')) {
+      console.error(
+        `The cookies.json file is missing. Please create the file and add the YouTube cookies to it.`,
+      );
+      writeErrorToLogFile(
+        `The cookies.json file is missing. Please create the file and add the YouTube cookies to it.`,
+      );
+      //stop the bot
+      client.destroy();
+      process.exit(0);
+    }
   } else {
     console.log(`Logged in, but user is not available.`);
   }
@@ -136,7 +153,7 @@ client.on(Events.ClientError, async (error) => {
 
   //write error to log
   const errorMsg = `[ERROR] ${error.message}`;
-  writeToLogFile(errorMsg);
+  writeErrorToLogFile(errorMsg);
 
   client.destroy();
 
@@ -144,38 +161,3 @@ client.on(Events.ClientError, async (error) => {
 });
 
 client.login(process.env.BOT_TOKEN);
-
-function writeToLogFile(logString) {
-  const date = new Date();
-  const dateString = `${date.getDate()}-${
-    date.getMonth() + 1
-  }-${date.getFullYear()}`;
-  const logFolderPath = path.join(__dirname, 'logs');
-
-  if (!fs.existsSync(logFolderPath)) {
-    fs.mkdirSync(logFolderPath);
-  }
-
-  const logFileName = `log - ${dateString}.txt`;
-  const logFilePath = path.join(logFolderPath, logFileName);
-
-  const existingLogs = fs.existsSync(logFilePath)
-    ? fs.readFileSync(logFilePath, 'utf8')
-    : '';
-  const newContent = `[${getFormattedTime(
-    date,
-  )}] ${logString}\n${existingLogs}`;
-
-  fs.writeFileSync(logFilePath, newContent);
-}
-
-function getFormattedTime(date) {
-  const hours = padZero(date.getHours());
-  const minutes = padZero(date.getMinutes());
-  const seconds = padZero(date.getSeconds());
-  return `${hours}:${minutes}:${seconds}`;
-}
-
-function padZero(value) {
-  return value.toString().padStart(2, '0');
-}

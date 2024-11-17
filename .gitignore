@@ -1,6 +1,14 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
 
+<<<<<<< Updated upstream
+=======
+# Docker
+# Private file holding the bot's token, among other sensitive data.
+.env
+cookies.json
+
+>>>>>>> Stashed changes
 ### Node ###
 # Logs
 logs
