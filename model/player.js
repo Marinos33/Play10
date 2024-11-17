@@ -1,5 +1,8 @@
 const { createAudioPlayer } = require('@discordjs/voice');
-const { writeToLogFile, writeErrorToLogFile } = require('../utils/logger');
+const {
+  writeToLogFile,
+  writeErrorToLogFile,
+} = require('../commands/utils/logger');
 
 class Player {
   constructor(playerId) {
