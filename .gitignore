@@ -5,6 +5,14 @@
 # Private file holding the bot's token, among other sensitive data.
 .env
 
+<<<<<<< Updated upstream
+=======
+# Docker
+# Private file holding the bot's token, among other sensitive data.
+.env
+cookies.json
+
+>>>>>>> Stashed changes
 ### Node ###
 # Logs
 logs

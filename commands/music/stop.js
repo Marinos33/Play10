@@ -21,6 +21,7 @@ module.exports = {
       return await interaction.reply('There is no music playing!');
     } catch (e) {
       console.log(e);
+      writeErrorToLogFile(e.stack);
       return await interaction.reply('Something went wrong');
     }
   },

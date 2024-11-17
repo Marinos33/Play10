@@ -25,6 +25,7 @@ module.exports = {
       return await interaction.reply('Playlist: \n' + titleString);
     } catch (e) {
       console.log(e);
+      writeErrorToLogFile(e.stack);
       return await interaction.reply('Something went wrong');
     }
   },
